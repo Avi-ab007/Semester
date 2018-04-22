@@ -1,0 +1,1 @@
+cmd_/home/avinash/Documents/CN/Drivers/Hello/hello.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/avinash/Documents/CN/Drivers/Hello/hello.ko /home/avinash/Documents/CN/Drivers/Hello/hello.o /home/avinash/Documents/CN/Drivers/Hello/hello.mod.o ;  true

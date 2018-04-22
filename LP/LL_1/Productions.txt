@@ -1,0 +1,61 @@
+S bbbA
+S bbC
+S bD
+A fg
+C hi
+D jk
+-
+
+S bbbA
+S bbC
+S cccB
+S ccD
+-
+
+S bbbA
+S bbB
+S bC
+S cccD
+S ccE
+S cF
+-
+
+
+S Sa
+S Sb
+S Sc
+S d
+S e
+-
+
+S Ta
+S b
+T Tc
+T Sd
+T ε
+-
+//////////////////////
+E TA
+A +TA
+A ε
+T FU
+U *FU
+U ε
+F (E)
+F i
+-
+/////////////////////
+
+A aA
+A ε
+B bB
+B ε
+C AB
+-
+
+A aA
+A ε
+B bB
+B ε
+C ABc
+-

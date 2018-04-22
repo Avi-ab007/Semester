@@ -1,0 +1,14 @@
+Objective of this program is to create a text file
+that can be used to print large banners on continuous sheet.
+This is mostly used in the era of dot matrix printers. 
+can't won't
+
+You are given a font file where the height of each character
+is exactly 2458 pixels (a.k.a. Ascii Chars)
+let's
+
+Width of the character can be variable and must be deducted from
+the file. 
+
+Given text is to be printed in a vertical orientation using this
+font file. 

@@ -1,0 +1,1 @@
+cmd_/home/avinash/Documents/CN/Drivers/OpenSource/opcr-chardev.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/avinash/Documents/CN/Drivers/OpenSource/opcr-chardev.ko /home/avinash/Documents/CN/Drivers/OpenSource/opcr-chardev.o /home/avinash/Documents/CN/Drivers/OpenSource/opcr-chardev.mod.o ;  true

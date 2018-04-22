@@ -1,0 +1,42 @@
+
+
+***********************TCP Packet*************************
+
+IP Header
+   |-IP Version        : 4
+   |-IP Header Length  : 5 DWORDS or 20 Bytes
+   |-Type Of Service   : 0
+   |-IP Total Length   : 52  Bytes(Size of Packet)
+   |-Identification    : 39079
+   |-TTL      : 63
+   |-Protocol : 6
+   |-Checksum : 13800
+   |-Source IP        : 172.30.0.7
+   |-Destination IP   : 192.168.0.103
+
+TCP Header
+   |-Source Port      : 3128
+   |-Destination Port : 52092
+   |-Sequence Number    : 977631305
+   |-Acknowledge Number : 1508525987
+   |-Header Length      : 8 DWORDS or 32 BYTES
+   |-Urgent Flag          : 0
+   |-Acknowledgement Flag : 1
+   |-Push Flag            : 0
+   |-Reset Flag           : 0
+   |-Synchronise Flag     : 0
+   |-Finish Flag          : 0
+   |-Window         : 252
+   |-Checksum       : 57291
+   |-Urgent Pointer : 0
+
+                        DATA Dump                         
+IP Header
+    45 00 00 34 98 A7 40 00 3F 06 35 E8 AC 1E 00 07         E..4..@.?.5.....
+    C0 A8 00 67                                             ...g
+TCP Header
+    0C 38 CB 7C 3A 45 78 49 59 EA 47 A3 80 10 00 FC         .8.|:ExIY.G.€...
+    DF CB 00 00 01 01 08 0A 7F 99 47 62 E1 EC 54 07         .........Gb..T.
+Data Payload
+
+###########################################################

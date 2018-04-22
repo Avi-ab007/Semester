@@ -1,0 +1,15 @@
+John is at a post, where they make pots. Making the pots will
+stop in the future. Oh dear, what will happen to them when it
+happens. This can happen only in Rome. Read on to find more . . . 
+Banner                                     Score: 10
+------
+
+Objective of this program is to create a text file
+that can be used to print large banners on continuous sheet.
+This is mostly used in the era of dot matrix printers. 
+
+You are given a font file where the height of each character
+is exactly 8 pixels (a.k.a. Ascii Chars)
+
+Width of the charecter can be variable and must be deducted from
+the file. 
