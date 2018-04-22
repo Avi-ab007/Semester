@@ -10,7 +10,7 @@ TYPES                   ["int" "unsigned_int" "float" "long" "boolean" "char" "d
 %{
 	#include <stdio.h>
 	#include "y.tab.h"
-	
+
 	char c;
 %}
 
