@@ -1,6 +1,7 @@
 HEADER FILES
 --------------------------------------------------------------------------------------------------------------------------------
 
+#include <bits/stdc++.h>
 #include <time.h>
 #include <stdio.h>
 #include <sys/socket.h>
@@ -22,6 +23,9 @@ HEADER FILES
 #include <net/ethernet.h>
 #include <netinet/ether.h>
 #include <netinet/udp.h>
+
+using namespace std;
+#define IP "127.0.0.1"
 
 /**
  This function is used to send file descriptor over Unix domain socket
@@ -176,29 +180,31 @@ SELECT
 
 	int sfd;
 	struct sockaddr_in serv_addr,cli_addr;
-	socklen_t cli_len;
-	int port_no=atoi(argv[1]);
+	socklen_t cli_len = sizeof(cli_addr);
+	int port_no = atoi(argv[1]);
 
 	if((sfd = socket(AF_INET,SOCK_STREAM,0))==-1)
-	perror("\n socket ");
-	else printf("\n socket created successfully");
+		perror("socket failed");
 
 	bzero(&serv_addr,sizeof(serv_addr));
 
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_port = htons(port_no);
-	serv_addr.sin_addr.s_addr = INADDR_ANY;
+	serv_addr.sin_addr.s_addr = inet_addr(IP);
+
+	int value = 1;
+	if (setsockopt(sfd, SOL_SOCKET, SO_REUSEADDR|SO_REUSEPORT, &value, sizeof value) == -1) {
+		perror("setsockopt failed");
+	}
 
 	if(bind(sfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr))==-1)
-	perror("\n bind : ");
-	else printf("\n bind successful ");
+		perror("bind failed");
 
 	listen(sfd,10);
 
 	int nsfd;
 	if((nsfd = accept(sfd , (struct sockaddr *)&cli_addr , &cli_len))==-1)
-	perror("\n accept ");
-	else printf("\n accept successful");
+		perror("accept failed");
 
 
 		          CONNECTION ORIENTED CLIENT	( usage -:  "./a.out port_no")
@@ -214,16 +220,19 @@ SELECT
 	bzero(&serv_addr,sizeof(serv_addr));
 
 	if((sfd = socket(AF_INET , SOCK_STREAM , 0))==-1)
-	perror("\n socket");
-	else printf("\n socket created successfully\n");
+		perror("socket failed");
 
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_port = htons(port_no);
-	serv_addr.sin_addr.s_addr = INADDR_ANY;
+	serv_addr.sin_addr.s_addr = inet_addr(IP);
+
+	int value = 1;
+	if (setsockopt(sfd, SOL_SOCKET, SO_REUSEADDR|SO_REUSEPORT, &value, sizeof value) == -1) {
+		perror("setsockopt failed");
+	}
 
 	if(connect(sfd , (struct sockaddr *)&serv_addr , sizeof(serv_addr))==-1)
-	perror("\n connect : ");
-	else printf("\nconnect succesful");
+	perror("connect failed");
 
 
 
@@ -238,18 +247,16 @@ SELECT
 	int port_no=atoi(argv[1]);
 
 	if((sfd = socket(AF_INET,SOCK_DGRAM,0)) == -1)
-	perror("\n socket ");
-	else printf("\n socket created successfully");
+	perror("socket failed");
 
 	bzero(&serv_addr,sizeof(serv_addr));
 
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_port = htons(port_no);
-	serv_addr.sin_addr.s_addr = INADDR_ANY;
+	serv_addr.sin_addr.s_addr = inet_addr(IP);
 
 	if(bind(sfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr))==-1)
-	perror("\n bind : ");
-	else printf("\n bind successful ");
+	perror("bind failed");
 
 	cli_len = sizeof(cli_addr);
 
@@ -271,12 +278,11 @@ SELECT
 	bzero(&serv_addr,sizeof(serv_addr));
 
 	if((sfd = socket(AF_INET , SOCK_DGRAM , 0))==-1)
-	perror("\n socket");
-	else printf("\n socket created successfully\n");
+	perror("socket failed");
 
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_port = htons(port_no);
-	serv_addr.sin_addr.s_addr = INADDR_ANY;
+	serv_addr.sin_addr.s_addr = inet_addr(IP);
 	
 	socklen_t serv_len = sizeof(serv_addr);
 	
@@ -293,7 +299,7 @@ SELECT
   	int userv_len,ucli_len;
 
 	usfd = socket(AF_UNIX , SOCK_STREAM , 0);
-	perror("socket");
+	perror("socket failed");
 
   	bzero(&userv_addr,sizeof(userv_addr));
 
@@ -303,7 +309,7 @@ SELECT
 	userv_len = sizeof(userv_addr);
 
 	if(bind(usfd, (struct sockaddr *)&userv_addr, userv_len)==-1)
-	perror("server: bind");
+	perror("bind failed");
 
 	listen(usfd, 5);
 
@@ -533,4 +539,96 @@ int send_fd(int socket, int fd_to_send)
 
 
 
-             
+						RAW SOCKET SERVER
+-----------------------------------------------------------------------------------------------------------------------------------
+#define len 65536
+
+void errexit(string err) {
+	perror(err.c_str());
+	exit(EXIT_FAILURE);
+}
+
+void print_iphdr(struct iphdr *ip) {
+	cout<<"IP header len: "<<(unsigned int)(ip->ihl)<<endl;
+	cout<<"IP header version: "<<(unsigned int)(ip->version)<<endl;
+	cout<<"IP header ttl: "<<(unsigned int)(ip->ttl)<<endl;
+	cout<<"Type of Service: "<<(unsigned int)(ip->tos)<<endl;
+	cout<<"Packet ID: "<<ntohs(ip->id)<<endl;
+	cout<<"IP Packet len: "<<ntohs(ip->tot_len)<<endl;
+	cout<<"Protocol: "<<(unsigned int)(ip->protocol)<<endl;
+	cout<<"Check: "<<ip->check<<endl;
+	cout<<"Source IP: "<<inet_ntoa(*(in_addr*)&ip->saddr)<<endl;
+	cout<<"Destination IP: "<<inet_ntoa(*(in_addr*)&ip->daddr)<<endl;
+}
+
+int main(int argc, char *argv[]) {
+	int rsfd;
+	rsfd = socket(AF_INET, SOCK_RAW, atoi(argv[1]));
+	if (rsfd == -1) 
+		errexit("socket failed");
+
+	char buff[65536];
+	struct sockaddr cliaddr;
+	socklen_t addrlen = sizeof cliaddr;
+	if (recvfrom(rsfd, buff, len, 0, (sockaddr*)&cliaddr, &addrlen) == -1)
+		errexit("recvfrom failed.");
+	struct iphdr *ip;
+	ip = (struct iphdr*)buff;
+	print_iphdr(ip);
+	printf("Data received: %s\n", (buff + (ip->ihl)*4));
+	return 0;
+}
+
+						RAW SOCKET CLIENT
+---------------------------------------------------------------------------------------------------------------------------------------
+#define pack 20
+int len;
+
+void errexit(string err) {
+	perror(err.c_str());
+	exit(EXIT_FAILURE);
+}
+
+void set_ip_hdr(struct iphdr *ip, int protocol_no) {
+	ip->version = 4;
+	ip->ihl = 5;
+	ip->tos = 0;
+	ip->frag_off = 0;
+	ip->tot_len = htons(pack + len);
+	ip->ttl = htons(100);
+	ip->id = htons(1234);
+	ip->protocol = protocol_no;
+	ip->saddr = inet_addr("127.0.0.7");
+	ip->daddr = inet_addr("127.0.0.1");
+	ip->check = 0;
+}
+
+int main(int argc, char const *argv[]) {
+	int rsfd = socket(AF_INET,SOCK_RAW, atoi(argv[1]));
+	if (rsfd == -1) 
+		errexit("socket failed");
+
+	int opt = 1;
+	if (setsockopt(rsfd, IPPROTO_IP, IP_HDRINCL, &opt, sizeof opt) == -1)
+		errexit("setsockopt failed");
+
+	struct sockaddr_in cli_addr;
+	cli_addr.sin_family = AF_INET;
+	cli_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	char data[30];
+	printf("Enter data: ");
+	scanf("%s", data);
+	len = strlen(data);
+	char buff[pack + len + 1];
+
+	struct iphdr *ip;
+	ip = (struct iphdr*)buff;
+	set_ip_hdr(ip, atoi(argv[1]));
+	strcpy(buff + pack, data);
+	cout<<inet_ntoa(*(in_addr*)&ip->daddr)<<endl;
+
+	if (sendto(rsfd, buff, pack + len + 1, 0, (struct sockaddr*)&cli_addr, sizeof cli_addr) == -1)
+		errexit("send to failed");
+
+	return 0;
+}             

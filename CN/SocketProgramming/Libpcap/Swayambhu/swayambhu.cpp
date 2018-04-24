@@ -57,9 +57,9 @@ void *acceptPorts(void *data) {
 			string sid = to_string(id);
 			serv += sid;
 
-			int value = 1;
 			printf("Process name for port %d : %s\n", pt, serv.c_str());
 
+			int value = 1;
 			if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR|SO_REUSEPORT, &value, sizeof value) == -1) {
 				perror("setsockopt failed");
 			}
