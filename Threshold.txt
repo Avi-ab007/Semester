@@ -1,0 +1,5 @@
+ItemSet		Sup. count
+
+I2			3
+I3			3
+I17			3
